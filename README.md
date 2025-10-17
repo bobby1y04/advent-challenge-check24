@@ -100,14 +100,13 @@ advent-challenge-check24/
 └── public/                      # Static assets
 ```
 
-```markdown
 ## 🛡️ Rules & Security
 
 - All inputs are validated and sanitized.
 - Part 2 remains locked until Part 1 is solved correctly.
 - Each wrong answer adds a penalty time to the final score.
 - Only results are stored, not the submitted solution code.
-```
+
 ## 🪙 License & Credits
 
 Developed for **CHECK24 Advent Challenge 2025**.  
