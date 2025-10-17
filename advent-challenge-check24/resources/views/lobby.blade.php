@@ -23,6 +23,7 @@
     </div>
 
     <p class="mt-6">Checkst du?</p>
+    <a href="{{ route('leaderboard') }}" class="text-sm text-slate-300 border border-slate-600 px-3 py-1 rounded-md">Leaderboard</a>
 </div>
 </body>
 </html>

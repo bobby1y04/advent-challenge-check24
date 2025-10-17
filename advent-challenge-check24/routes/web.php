@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChallengeController;
+use App\Http\Controllers\LeaderboardController;
 
 // +++ Login / Logout +++
 Route::view('/join', 'join')->name('join');
@@ -16,6 +17,9 @@ Route::middleware('auth.session')->group(function() {
     // +++ Challenge-Routes +++
     Route::get('/challenge/{slug}', [ChallengeController::class, 'show'])->name('challenge.show');
     Route::post('challenge/{slug}/submit', [ChallengeController::class, 'submit'])->name('challenge.submit');
+
+    // +++ Leaderboard-Routes +++
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
 });
 
 
