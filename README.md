@@ -98,6 +98,7 @@ advent-challenge-check24/
 ├── routes/web.php               # Routes
 └── public/                      # Static assets
 
+```markdown
 ## 🛡️ Rules & Security
 
 - All inputs are validated and sanitized.
