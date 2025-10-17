@@ -86,6 +86,7 @@ php artisan serve
 
 # Start frontend
 npm run dev
+```
 
 ## 📁 Project Structure
 
@@ -97,6 +98,7 @@ advent-challenge-check24/
 ├── resources/js/                # Vue.js frontend
 ├── routes/web.php               # Routes
 └── public/                      # Static assets
+```
 
 ```markdown
 ## 🛡️ Rules & Security
@@ -105,7 +107,7 @@ advent-challenge-check24/
 - Part 2 remains locked until Part 1 is solved correctly.
 - Each wrong answer adds a penalty time to the final score.
 - Only results are stored, not the submitted solution code.
-
+```
 ## 🪙 License & Credits
 
 Developed for **CHECK24 Advent Challenge 2025**.  
