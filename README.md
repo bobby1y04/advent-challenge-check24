@@ -8,7 +8,7 @@ It is designed so that participants can complete it within **1 to 1.5 hours**.
 
 - **Backend:** [Laravel](https://laravel.com) (PHP)  
 - **Frontend:** Vue.js + JavaScript  
-- **Database:** [PostgreSQL](https://www.postgresql.org)  
+- **Database:** [SQLite](https://www.sqlite.org/) 
 - **Package Manager:** Composer & npm  
 - **Environment:** Local & Production ready
 
