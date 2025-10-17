@@ -4,12 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\table;
 
 class ChallengeController extends Controller
 {
     public function show(string $slug) {
         $challenge = DB::table('challenges')->where('slug', $slug)->firstOrFail();
-        return view('challenge', compact('challenge'));
+
+        $userId = request()->session()->get('user_id');
+        $p1Solved = false;
+        if ($userId) {
+            $p1Solved = (bool) DB::table('scores')
+                ->where(['user_id' => $userId, 'challenge_id' => $challenge->id])
+                ->value('part1_time_ms');
+        }
+        return view('challenge', compact('challenge', 'p1Solved'));
     }
 
     public function submit(Request $request, string $slug) {
@@ -19,23 +28,37 @@ class ChallengeController extends Controller
            'answer' => ['required', 'string', 'max:2000'],
         ]);
 
+        $part = (int) $data['part'];
+
         $userId = $request->session()->get('user_id');
+
+        if ($part === 2) {
+            $p1Solved = (bool) DB::table('scores')
+                ->where(['user_id' => $userId, 'challenge_id' => $challenge->id])
+                ->value('part1_time_ms');
+
+            if (!$p1Solved) {
+                return back()
+                    ->withErrors(['part' => 'Part 2 ist erst verfügbar, wenn Part 1 korrekt ist.'])
+                    ->withInput();
+            }
+        }
 
         $penalties = DB::table('submissions')
             ->where('user_id', $userId)
             ->where('challenge_id', $challenge->id)
-            ->where('part', $data['part'])
+            ->where('part', $part)
             ->where ('is_correct', false)
             ->count();
 
         // Einfacher Checker für die Demo
-        $expected = $data['part'] == 1 ? '42' : '84';
+        $expected = $part == 1 ? '42' : '84';
         $isCorrect = trim($data['answer']) === $expected;
 
         DB::table('submissions')->insert([
             'user_id' => $userId,
             'challenge_id' => $challenge->id,
-            'part' => $data['part'],
+            'part' => $part,
             'answer_text' => $data['answer'],
             'is_correct' => $isCorrect,
             'penalty_count_at_submit' => $penalties,
@@ -43,10 +66,10 @@ class ChallengeController extends Controller
         ]);
 
         if ($isCorrect) {
-            $this->recordSuccess($userId, $challenge->id, (int)$data['part'], $penalties);
+            $this->recordSuccess($userId, $challenge->id, (int) $part, $penalties);
         }
 
-        return back()->with('status', $isCorrect ? 'correct' : 'incorrect');
+        return back()->with('status', $isCorrect ? 'correct' : 'incorrect')->withInput();
     }
 
     private function recordSuccess(int $userId, int $challengeId, int $part, int $penalties) : void {

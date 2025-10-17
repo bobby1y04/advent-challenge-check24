@@ -25,19 +25,34 @@
         @csrf
         <div class="flex gap-3">
             <select name="part" class="bg-slate-800 border border-slate-700 rounded-md px-3 py-2">
-                <option value="1">Part 1</option>
-                <option value="2">Part 2</option>
+                <option value="1" {{ old('part', session('part')) == 1 ? 'selected' : '' }}>Part 1</option>
+                <option value="2" {{ old('part', session('part')) == 2 ? 'selected' : '' }} @disabled(!$p1Solved)>Part 2</option>
             </select>
-            <input name="answer" placeholder="Deine Antwort" class="flex-1 bg-slate-800 border border-slate-700 rounded-md px-3 py-2" required>
+            <input name="answer" placeholder="Deine Antwort" value="{{ old('answer') }}" class="flex-1 bg-slate-800 border border-slate-700 rounded-md px-3 py-2" required>
             <button class="bg-emerald-600 hover:bg-emerald-500 rounded-md px-4 py-2">Submit</button>
         </div>
-        @if (session('status') === 'correct')
-            <p class="text-emerald-400">✅ Korrekt!</p>
-        @elseif (session('status') === 'incorrect')
-            <p class="text-red-400">❌ Leider falsch.</p>
+        @if (session('status') === 'correct' || session('status') === 'incorrect')
+            <div id="feedback">
+                @if (session('status') === 'correct')
+                    <p class="text-emerald-400">✅ Korrekt!</p>
+                @else
+                    <p class="text-red-400">❌ Leider falsch.</p>
+                @endif
+            </div>
         @endif
         @error('answer')<p class="text-red-400">{{ $message }}</p>@enderror
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+           let sel = document.querySelector('select[name="part"]');
+           if (sel) {
+               sel.addEventListener('change', () => {
+                   let box = document.getElementById('feedback');
+                   if (box) box.remove();
+               })
+           }
+        });
+    </script>
 </div>
 </body>
 </html>
