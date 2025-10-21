@@ -80,7 +80,14 @@ class ChallengeController extends Controller
         $score = DB::table('scores')->where(['user_id' => $userId, 'challenge_id' => $challengeId])->first();
         $set = [];
         if ($part === 1 && (!$score || !$score->part1_time_ms)) $set += ['part1_time_ms' => $elapsed+$penaltyMs, 'part1_penalties' => $penalties];
-        if ($part === 2 && (!$score || !$score->part2_time_ms)) $set += ['part2_time_ms' => $elapsed+$penaltyMs, 'part2_penalties' => $penalties];
+
+        if ($part === 2 && (!$score || !$score->part2_time_ms)) {
+            $elapsedForPart2 = $elapsed - ($score->part1_time_ms ?? 0);
+            $set += [
+                'part2_time_ms'   => $elapsedForPart2 + $penaltyMs,
+                'part2_penalties' => $penalties,
+            ];
+        }
 
         if ($score) {
             DB::table('scores')->where('id', $score->id)->update($set + [
