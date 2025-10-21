@@ -11,8 +11,8 @@ class LeaderboardController extends Controller
         $rows = DB::table('scores')
             ->join('users', 'users.id', '=', 'scores.user_id')
             ->select('users.username',
-                'scores.part1_time_ms', 'scores.part1_penalties',
-                'scores.part2_time_ms', 'scores.part2_penalties',
+                'scores.part1_time_ms',
+                'scores.part2_time_ms',
                 DB::raw('COALESCE(scores.total_time_ms, scores.part1_time_ms + scores.part2_time_ms) AS total_time_ms')
             )
             ->orderByRaw('total_time_ms IS NULL, total_time_ms DESC') // SQLite: NULLs last

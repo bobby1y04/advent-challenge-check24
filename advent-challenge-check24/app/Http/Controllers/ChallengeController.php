@@ -44,13 +44,6 @@ class ChallengeController extends Controller
             }
         }
 
-        $penalties = DB::table('submissions')
-            ->where('user_id', $userId)
-            ->where('challenge_id', $challenge->id)
-            ->where('part', $part)
-            ->where ('is_correct', false)
-            ->count();
-
         // Einfacher Checker für die Demo
         $expected = $part == 1 ? '42' : '84';
         $isCorrect = trim($data['answer']) === $expected;
@@ -61,31 +54,28 @@ class ChallengeController extends Controller
             'part' => $part,
             'answer_text' => $data['answer'],
             'is_correct' => $isCorrect,
-            'penalty_count_at_submit' => $penalties,
             'created_at' => now(), 'updated_at' => now(),
         ]);
 
         if ($isCorrect) {
-            $this->recordSuccess($userId, $challenge->id, (int) $part, $penalties);
+            $this->recordSuccess($userId, $challenge->id, (int) $part);
         }
 
         return back()->with('status', $isCorrect ? 'correct' : 'incorrect')->withInput();
     }
 
-    private function recordSuccess(int $userId, int $challengeId, int $part, int $penalties) : void {
+    private function recordSuccess(int $userId, int $challengeId, int $part) : void {
         $start = \Carbon\Carbon::parse(DB::table('settings')->where('key', 'event_start')->value('value') ?? now());
         $elapsed = now()->diffInMilliseconds($start);
-        $penaltyMs = (int)(DB::table('settings')->where('key', 'penalty_minutes')->value('value') ?? 5) * 60_000 * $penalties;
 
         $score = DB::table('scores')->where(['user_id' => $userId, 'challenge_id' => $challengeId])->first();
         $set = [];
-        if ($part === 1 && (!$score || !$score->part1_time_ms)) $set += ['part1_time_ms' => $elapsed+$penaltyMs, 'part1_penalties' => $penalties];
+        if ($part === 1 && (!$score || !$score->part1_time_ms)) $set += ['part1_time_ms' => $elapsed];
 
         if ($part === 2 && (!$score || !$score->part2_time_ms)) {
             $elapsedForPart2 = $elapsed - ($score->part1_time_ms ?? 0);
             $set += [
-                'part2_time_ms'   => $elapsedForPart2 + $penaltyMs,
-                'part2_penalties' => $penalties,
+                'part2_time_ms'   => $elapsedForPart2,
             ];
         }
 
