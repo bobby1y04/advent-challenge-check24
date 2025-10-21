@@ -29,7 +29,7 @@
         </div>
 
         <button type="submit"
-                class="w-full bg-emerald-600 hover:bg-emerald-500 rounded-md px-3 py-2 font-medium">
+                class="btn-primary btn-block">
             Join
         </button>
     </form>

@@ -12,7 +12,6 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <h1 class="title">Leaderboard</h1>
-        <a href="{{ route('lobby') }}" class="text-sm text-slate-300 border border-slate-600 px-3 py-1 rounded-md">Back</a>
     </div>
 
     <table class="w-full text-left text-sm border-separate border-spacing-y-1">
@@ -32,11 +31,11 @@
               if ($ms === null) return '—';
               if ($ms < 0) $ms *= -1;
 
-              $seconds = (int) floor ($ms / 1000);
-              $minutes = intdiv($seconds % 3600, 60);
-              $hours = intdiv($seconds % 86400, 3600);
-              $secs = $seconds % 60;
-              return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
+              $totalSeconds = (int) floor($ms/1000);
+              $hours = intdiv($totalSeconds, 3600);
+              $minutes = intdiv($totalSeconds % 3600, 60);
+              $seconds = $totalSeconds % 60;
+              return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
             };
         @endphp
 
