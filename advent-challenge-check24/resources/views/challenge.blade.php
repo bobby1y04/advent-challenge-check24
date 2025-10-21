@@ -29,7 +29,7 @@
                 <option value="2" {{ old('part', session('part')) == 2 ? 'selected' : '' }} @disabled(!$p1Solved)>Part 2</option>
             </select>
             <input name="answer" placeholder="Deine Antwort" value="{{ old('answer') }}" class="flex-1 bg-slate-800 border border-slate-700 rounded-md px-3 py-2" required>
-            <button class="bg-emerald-600 hover:bg-emerald-500 rounded-md px-4 py-2">Submit</button>
+            <button class="bg-[#0067B8] hover:bg-[#005a9e] rounded-md px-4 py-2">Submit</button>
         </div>
         @if (session('status') === 'correct' || session('status') === 'incorrect')
             <div id="feedback">
